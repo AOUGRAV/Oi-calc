@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>حاسبة تكاليف الشحن | Ocean Island</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src="assets/oi-logo.png" alt="Ocean Island Logistic Services" />
+          <div>
+            <p>جزيرة المحيط للخدمات اللوجستية</p>
+            <span>حاسبة عروض شحن السيارات</span>
+          </div>
+        </div>
+        <nav class="main-nav" aria-label="أقسام التطبيق">
+          <button class="nav-button is-active" type="button" data-view="roro">
+            <span aria-hidden="true">🚢</span>
+            <span>RORO</span>
+          </button>
+          <button class="nav-button" type="button" data-view="container">
+            <span aria-hidden="true">📦</span>
+            <span>الحاوية</span>
+          </button>
+          <button class="nav-button" type="button" data-view="settings">
+            <span aria-hidden="true">⚙️</span>
+            <span>الإعدادات</span>
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <section id="roroView" class="view is-active" aria-labelledby="roroTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">RORO</p>
+              <h1 id="roroTitle">حساب شحن RORO</h1>
+            </div>
+            <div class="rate-pill">
+              <span>سعر الصرف</span>
+              <strong data-exchange-rate>3.75</strong>
+            </div>
+          </div>
+
+          <form id="roroForm" class="form-grid" novalidate>
+            <div class="panel">
+              <h2>أبعاد السيارة</h2>
+              <div class="inputs-grid three">
+                <label>
+                  <span>الطول</span>
+                  <input id="roroLength" name="length" type="number" min="0" step="0.001" inputmode="decimal" value="5.025" />
+                  <small>متر</small>
+                </label>
+                <label>
+                  <span>العرض</span>
+                  <input id="roroWidth" name="width" type="number" min="0" step="0.001" inputmode="decimal" value="1.980" />
+                  <small>متر</small>
+                </label>
+                <label>
+                  <span>الارتفاع</span>
+                  <input id="roroHeight" name="height" type="number" min="0" step="0.001" inputmode="decimal" value="1.992" />
+                  <small>متر</small>
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2>الأسعار المتغيرة</h2>
+              <div class="inputs-grid three">
+                <label>
+                  <span>سعر CBM</span>
+                  <input id="roroCbmRate" name="cbmRateUsd" type="number" min="0" step="0.01" inputmode="decimal" value="90" />
+                  <small>USD</small>
+                </label>
+                <label>
+                  <span>سعر LM</span>
+                  <input id="roroLmRate" name="lmRateUsd" type="number" min="0" step="0.01" inputmode="decimal" value="60" />
+                  <small>USD</small>
+                </label>
+                <label>
+                  <span>التأمين</span>
+                  <input id="roroInsurance" name="insurancePercent" type="number" min="0" step="0.01" inputmode="decimal" value="29.2" />
+                  <small>%</small>
+                </label>
+              </div>
+              <label class="toggle-line">
+                <input id="overrideBillDelivery" type="checkbox" />
+                <span>تعديل تسليم البوليصة لهذه الشحنة</span>
+              </label>
+              <div id="billDeliveryOverrideWrap" class="inline-override" hidden>
+                <label>
+                  <span>تسليم البوليصة</span>
+                  <input id="roroBillDelivery" name="billDelivery" type="number" min="0" step="0.01" inputmode="decimal" />
+                  <small data-bill-currency>USD</small>
+                </label>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="primary-button" type="submit" data-result-mode="details">إنشاء عرض سعر</button>
+              <button class="secondary-button" type="submit" data-result-mode="total">عرض التكلفة</button>
+            </div>
+            <p id="roroError" class="form-error" role="alert" hidden></p>
+          </form>
+
+          <div id="roroResult" class="result-slot"></div>
+        </section>
+
+        <section id="containerView" class="view" aria-labelledby="containerTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Container</p>
+              <h1 id="containerTitle">حساب تكلفة الحاوية</h1>
+            </div>
+            <div class="rate-pill">
+              <span>سعر الصرف</span>
+              <strong data-exchange-rate>3.75</strong>
+            </div>
+          </div>
+
+          <form id="containerForm" class="form-grid" novalidate>
+            <div class="panel">
+              <h2>سعر الخط الملاحي</h2>
+              <div class="inputs-grid compact">
+                <label>
+                  <span>السعر</span>
+                  <input id="containerOceanFreight" name="oceanFreight" type="number" min="0" step="0.01" inputmode="decimal" value="2500" />
+                  <small>المبلغ</small>
+                </label>
+                <label>
+                  <span>العملة</span>
+                  <select id="containerOceanCurrency" name="currency">
+                    <option value="SAR" selected>SAR</option>
+                    <option value="USD">USD</option>
+                  </select>
+                  <small>عملة السعر</small>
+                </label>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="primary-button" type="submit" data-result-mode="details">إنشاء عرض سعر</button>
+              <button class="secondary-button" type="submit" data-result-mode="total">عرض التكلفة</button>
+            </div>
+            <p id="containerError" class="form-error" role="alert" hidden></p>
+          </form>
+
+          <div id="containerResult" class="result-slot"></div>
+        </section>
+
+        <section id="settingsView" class="view" aria-labelledby="settingsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Settings</p>
+              <h1 id="settingsTitle">الإعدادات</h1>
+            </div>
+          </div>
+
+          <form id="settingsForm" class="settings-grid" novalidate>
+            <div class="panel">
+              <h2>الإعدادات العامة</h2>
+              <div class="inputs-grid compact">
+                <label>
+                  <span>سعر الصرف</span>
+                  <input id="exchangeRateInput" type="number" min="0" step="0.0001" inputmode="decimal" />
+                  <small>1 USD = SAR</small>
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-title-row">
+                <h2>إعدادات RORO</h2>
+                <button class="ghost-button" type="button" data-add-fee="roro">+ إضافة رسوم</button>
+              </div>
+              <div class="inputs-grid compact">
+                <label>
+                  <span>رسوم تسليم البوليصة</span>
+                  <input id="roroBillDefaultAmount" type="number" min="0" step="0.01" inputmode="decimal" />
+                  <small>المبلغ الافتراضي</small>
+                </label>
+                <label>
+                  <span>عملة تسليم البوليصة</span>
+                  <select id="roroBillDefaultCurrency">
+                    <option value="USD">USD</option>
+                    <option value="SAR">SAR</option>
+                  </select>
+                  <small>تستخدم تلقائيًا</small>
+                </label>
+              </div>
+              <div id="roroFeesEditor" class="fees-editor"></div>
+              <div class="profit-editor">
+                <h3>هامش الربح</h3>
+                <div class="inputs-grid three">
+                  <label>
+                    <span>النوع</span>
+                    <select id="roroProfitType">
+                      <option value="fixed">مبلغ ثابت</option>
+                      <option value="percentage">نسبة مئوية</option>
+                    </select>
+                    <small>طريقة الحساب</small>
+                  </label>
+                  <label>
+                    <span>القيمة</span>
+                    <input id="roroProfitAmount" type="number" min="0" step="0.01" inputmode="decimal" />
+                    <small>مبلغ أو نسبة</small>
+                  </label>
+                  <label>
+                    <span>العملة</span>
+                    <select id="roroProfitCurrency">
+                      <option value="USD">USD</option>
+                      <option value="SAR">SAR</option>
+                    </select>
+                    <small>للمبلغ الثابت</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-title-row">
+                <h2>إعدادات الحاوية</h2>
+                <button class="ghost-button" type="button" data-add-fee="container">+ إضافة رسوم</button>
+              </div>
+              <div id="containerFeesEditor" class="fees-editor"></div>
+              <div class="profit-editor">
+                <h3>هامش الربح</h3>
+                <div class="inputs-grid three">
+                  <label>
+                    <span>النوع</span>
+                    <select id="containerProfitType">
+                      <option value="fixed">مبلغ ثابت</option>
+                      <option value="percentage">نسبة مئوية</option>
+                    </select>
+                    <small>طريقة الحساب</small>
+                  </label>
+                  <label>
+                    <span>القيمة</span>
+                    <input id="containerProfitAmount" type="number" min="0" step="0.01" inputmode="decimal" />
+                    <small>مبلغ أو نسبة</small>
+                  </label>
+                  <label>
+                    <span>العملة</span>
+                    <select id="containerProfitCurrency">
+                      <option value="SAR">SAR</option>
+                      <option value="USD">USD</option>
+                    </select>
+                    <small>للمبلغ الثابت</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-actions">
+              <button class="primary-button" type="submit">حفظ التغييرات</button>
+              <button id="resetSettingsButton" class="danger-outline-button" type="button">إعادة ضبط الإعدادات</button>
+            </div>
+            <p id="settingsError" class="form-error" role="alert" hidden></p>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <dialog id="feeDialog" class="modal">
+      <form method="dialog" id="feeDialogForm">
+        <h2 id="feeDialogTitle">إضافة رسوم</h2>
+        <input type="hidden" id="feeDialogScope" />
+        <input type="hidden" id="feeDialogId" />
+        <label>
+          <span>اسم الرسوم</span>
+          <input id="feeDialogName" type="text" required />
+        </label>
+        <label>
+          <span>القيمة</span>
+          <input id="feeDialogAmount" type="number" min="0" step="0.01" inputmode="decimal" required />
+        </label>
+        <label>
+          <span>العملة</span>
+          <select id="feeDialogCurrency">
+            <option value="SAR">SAR</option>
+            <option value="USD">USD</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button class="secondary-button" value="cancel" type="button" data-close-dialog>إلغاء</button>
+          <button class="primary-button" value="save" type="submit">حفظ</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="confirmDialog" class="modal">
+      <form method="dialog" id="confirmDialogForm">
+        <h2 id="confirmTitle">تأكيد</h2>
+        <p id="confirmMessage"></p>
+        <div class="modal-actions">
+          <button class="secondary-button" value="cancel" type="button" data-cancel-confirm>إلغاء</button>
+          <button id="confirmActionButton" class="danger-button" value="confirm" type="submit">حذف</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="src/defaults.js"></script>
+    <script src="src/calculations.js"></script>
+    <script src="src/storage.js"></script>
+    <script src="src/app.js"></script>
+  </body>
+</html>
